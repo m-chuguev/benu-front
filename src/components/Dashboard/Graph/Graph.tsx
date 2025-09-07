@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unused-vars */
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as d3 from "d3";
+import {TBox} from "../../../types/ontology.ts";
+import type {GraphDto} from "../../../api";
 
 /**
  * React + D3 Directed Graph
@@ -61,8 +63,16 @@ function transformOntology(input: any) {
 // ===== Стартовые данные — сразу показываем ваш пример =====
 const initialData = transformOntology(sampleOntology);
 
-export default function Graph() {
-  const [data] = useState<any>(initialData);
+interface GraphProps {
+  graphData: GraphDto
+}
+
+export default function Graph({graphData}: GraphProps) {
+  const [data, setData] = useState<any>({nodes: [], links: [], types: {}});
+  useEffect(() => {
+    setData(transformOntology(graphData))
+  }, [graphData]);
+
   const svgRef = useRef<SVGSVGElement | null>(null);
 
   // карта цветов типов узлов

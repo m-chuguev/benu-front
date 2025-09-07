@@ -132,6 +132,8 @@ function App() {
       {activeWorkspace ? (
         <div className="flex-1 flex flex-col">
           <Dashboard
+              activeTBoxId={activeTBoxId}
+              activeRepositoryId={activeRepositoryId}
             workspace={activeWorkspace}
             onWorkspaceChange={handleWorkspaceChange}
           />

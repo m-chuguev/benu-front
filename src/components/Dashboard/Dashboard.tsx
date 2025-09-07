@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { TBox, OntologyClass, OntologyInstance, OntologyProperty } from '../../types/ontology';
 import { useDraftState } from '../../hooks/useDraftState';
 import TopBar from './TopBar';
 import StatsPanel from './StatsPanel';
-import DemoGraphSimple from './DemoGraphSimple';
 import ObjectInspector from './ObjectInspector';
 import AIPanel from './AIPanel';
 import UploadDataModal from '../Modals/UploadDataModal';
@@ -13,10 +12,13 @@ import ValidationModal from '../Modals/ValidationModal';
 import { UploadPreview, ApprovedSections } from '../../types/ontology';
 import FullscreenGraphModal from './FullscreenGraphModal';
 import Graph from "./Graph/Graph.tsx";
+import {GraphDto, OntologyGraphViewService} from "../../api";
 
 interface DashboardProps {
   workspace: TBox;
   onWorkspaceChange: (workspace: TBox) => void;
+  activeRepositoryId: string | null,
+  activeTBoxId: string | null
 }
 
 
@@ -27,7 +29,8 @@ interface Property {
   type: 'string' | 'number' | 'boolean' | 'date' | 'IRI';
 }
 
-export default function Dashboard({ workspace, onWorkspaceChange }: DashboardProps) {
+export default function Dashboard({ activeRepositoryId, activeTBoxId, workspace, onWorkspaceChange }: DashboardProps) {
+  const [graphData, setGraphData] = useState<GraphDto | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string>();
   const [isInspectorOpen, setIsInspectorOpen] = useState(true);
   const [isAIPanelOpen, setIsAIPanelOpen] = useState(false);
@@ -37,6 +40,15 @@ export default function Dashboard({ workspace, onWorkspaceChange }: DashboardPro
   const [showValidationModal, setShowValidationModal] = useState(false);
   const [highlightedNodes, setHighlightedNodes] = useState<string[]>([]);
   const [showFullscreenGraph, setShowFullscreenGraph] = useState(false);
+
+  useEffect(() => {
+    if(activeRepositoryId && activeTBoxId) {
+      OntologyGraphViewService.getGraphViewMap(activeRepositoryId, activeTBoxId).then(response => {
+        console.log(response)
+        setGraphData(response);
+      })
+    }
+  }, [activeTBoxId, activeRepositoryId]);
 
   // Use draft state management
   const {
@@ -50,7 +62,6 @@ export default function Dashboard({ workspace, onWorkspaceChange }: DashboardPro
     moveNode,
     addNode,
     deleteNode,
-    updateRelation,
     undo,
     save,
     cancel
@@ -331,7 +342,7 @@ export default function Dashboard({ workspace, onWorkspaceChange }: DashboardPro
       <div className="flex-1 flex min-h-px">
         {/* Graph View */}
         <div className="flex-1">
-          <Graph/>
+          {graphData && <Graph graphData={graphData}/>}
         </div>
         
         {/* Object Inspector */}

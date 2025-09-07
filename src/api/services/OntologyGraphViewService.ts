@@ -20,7 +20,23 @@ export class OntologyGraphViewService {
     public static getGraphViewMap(
         repository: string,
         tBoxGraphName: string,
-        requestBody: GraphQueryDto,
+        requestBody: GraphQueryDto = {
+            seedIris: [
+                "https://example.com/ontology#ClassicFacial"
+            ],
+            depth: 1,
+            maxNodes: 500,
+            includeSubclass: true,
+            includeTypes: true,
+            includeEquivalents: false,
+            includeDisjoints: false,
+            includeNamespaces: [
+                "ex:",
+                "k8s:"
+            ],
+            includeDataProps: true,
+            dataValuesLimit: 3
+        },
     ): CancelablePromise<GraphDto> {
         return __request(OpenAPI, {
             method: 'POST',
