@@ -40,10 +40,10 @@ export interface TBox {
   description?: string;
   createdAt?: Date;
   updatedAt?: Date;
-  classes?: OntologyClass[];
-  properties?: OntologyProperty[];
-  instances?: OntologyInstance[];
-  relations?: OntologyRelation[];
+  classes: OntologyClass[];
+  properties: OntologyProperty[];
+  instances: OntologyInstance[];
+  relations: OntologyRelation[];
 }
 
 export interface GraphNode {

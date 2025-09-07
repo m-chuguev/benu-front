@@ -12,6 +12,7 @@ import AddInstanceModal from '../Modals/AddInstanceModal';
 import ValidationModal from '../Modals/ValidationModal';
 import { UploadPreview, ApprovedSections } from '../../types/ontology';
 import FullscreenGraphModal from './FullscreenGraphModal';
+import Graph from "./Graph/Graph.tsx";
 
 interface DashboardProps {
   workspace: TBox;
@@ -313,7 +314,7 @@ export default function Dashboard({ workspace, onWorkspaceChange }: DashboardPro
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="h-screen bg-gray-50 flex flex-col">
       {/* Top Bar */}
       <TopBar
         workspace={workspace}
@@ -327,12 +328,10 @@ export default function Dashboard({ workspace, onWorkspaceChange }: DashboardPro
       <StatsPanel workspace={workspace} />
 
       {/* Main Content */}
-      <div className="flex-1 flex">
+      <div className="flex-1 flex min-h-px">
         {/* Graph View */}
-        <div className="flex-1 flex flex-col">
-        <DemoGraphSimple
-            workspace={workspace}
-          />
+        <div className="flex-1">
+          <Graph/>
         </div>
         
         {/* Object Inspector */}
