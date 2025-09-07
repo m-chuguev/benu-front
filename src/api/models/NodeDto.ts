@@ -9,7 +9,7 @@ export type NodeDto = {
     /**
      * Стабильный ID для фронта (обычно hash от IRI или UUID)
      */
-    id?: string;
+    id: string;
     /**
      * Полный IRI сущности, если есть
      */
