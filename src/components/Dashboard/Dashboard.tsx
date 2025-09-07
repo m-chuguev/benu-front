@@ -366,7 +366,7 @@ export default function Dashboard({ workspace, onWorkspaceChange }: DashboardPro
           <AIPanel
             isOpen={isAIPanelOpen}
             onToggle={handleToggleAIPanel}
-            workspaceName={workspace.name}
+            workspaceName={workspace.title}
           />
         </div>
       )}

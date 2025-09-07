@@ -9,7 +9,7 @@ export type TboxGraph = {
     /**
      * Ключ T-Box (последний сегмент перед /graphs/tbox)
      */
-    tboxKey?: string;
+    tboxKey: string;
     /**
      * IRI именованного графа T-Box
      */

@@ -1,19 +1,29 @@
-import React from 'react';
 import { Workspace } from '../../types/ontology';
+import {useEffect, useState} from 'react';
 import { FolderOpen, Plus, Database } from 'lucide-react';
+import {GraphDbRepositoriesService, RepositorySummaryDto} from "../../api";
 
 interface SidebarProps {
   workspaces: Workspace[];
   activeWorkspaceId: string | null;
-  onWorkspaceSelect: (workspaceId: string) => void;
+  setActiveRepositoryId: (id: string) => void;
+  onTBoxSelect: (workspaceId: string) => void;
   onCreateWorkspace: () => void;
 }
 
-export default function Sidebar({ workspaces, activeWorkspaceId, onWorkspaceSelect, onCreateWorkspace }: SidebarProps) {
+export default function Sidebar({ workspaces, activeWorkspaceId, setActiveRepositoryId, onTBoxSelect, onCreateWorkspace }: SidebarProps) {
+  const [repositories, setRepositories] = useState<RepositorySummaryDto[]>([]);
+
+  useEffect(() => {
+    GraphDbRepositoriesService.listRepositories().then((response) => {
+      setRepositories(response)
+    })
+  }, []);
+
   return (
     <div className="w-64 bg-white border-r border-gray-200 flex flex-col min-h-screen">
       {/* Header */}
-      <div className="p-4 border-b border-gray-200">
+      <div className="flex flex-col gap-2 p-4 border-b border-gray-200">
         <div className="flex items-center space-x-2">
           <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
             <Database size={18} className="text-white" />
@@ -22,6 +32,23 @@ export default function Sidebar({ workspaces, activeWorkspaceId, onWorkspaceSele
             <h1 className="text-lg font-bold text-gray-900">OpenOntology</h1>
           </div>
         </div>
+        <select
+            className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 bg-white shadow-sm
+             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            defaultValue=""
+            onChange={(event) => {
+              setActiveRepositoryId(event.target.value)
+            }}
+        >
+          <option value="" disabled>
+            Select Repository
+          </option>
+          {repositories.map((repository) => (
+              <option key={repository.id} value={repository.id}>
+                {repository.title}
+              </option>
+          ))}
+        </select>
       </div>
 
       {/* Workspaces */}
@@ -40,7 +67,7 @@ export default function Sidebar({ workspaces, activeWorkspaceId, onWorkspaceSele
           {workspaces.map((workspace) => (
             <button
               key={workspace.id}
-              onClick={() => onWorkspaceSelect(workspace.id)}
+              onClick={() => onTBoxSelect(workspace.id)}
               className={`w-full text-left p-3 rounded-lg transition-colors ${
                 activeWorkspaceId === workspace.id
                   ? 'bg-blue-50 text-blue-900 border border-blue-200'
@@ -52,9 +79,9 @@ export default function Sidebar({ workspaces, activeWorkspaceId, onWorkspaceSele
                   activeWorkspaceId === workspace.id ? 'text-blue-600' : 'text-gray-500'
                 } />
                 <div className="flex-1 min-w-0">
-                  <div className="font-medium truncate">{workspace.name}</div>
+                  <div className="font-medium truncate">{workspace.title}</div>
                   <div className="text-xs text-gray-500 mt-0.5">
-                    {workspace.classes.length}C • {workspace.instances.length}I
+                    {workspace.classes?.length}C • {workspace.instances?.length}I
                   </div>
                 </div>
               </div>

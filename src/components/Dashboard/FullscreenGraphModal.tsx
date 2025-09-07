@@ -53,7 +53,7 @@ export default function FullscreenGraphModal({
 
         {/* Title */}
         <div className="absolute top-4 left-4 z-10 bg-white border border-gray-200 rounded-lg shadow-sm px-4 py-2">
-          <h2 className="text-lg font-semibold text-gray-900">{workspace.name} - Fullscreen View</h2>
+          <h2 className="text-lg font-semibold text-gray-900">{workspace.title} - Fullscreen View</h2>
         </div>
 
         {/* Fullscreen Graph */}

@@ -3,8 +3,11 @@
 /* tslint:disable */
 /* eslint-disable */
 export type RepositorySummaryDto = {
-    id?: string;
-    title?: string;
+    id: string;
+    title: string;
+    description?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
     uri?: string;
     readable?: boolean;
     writable?: boolean;

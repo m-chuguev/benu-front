@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Workspace, UploadPreview } from './types/ontology';
+import {
+  Workspace,
+  UploadPreview,
+} from './types/ontology';
 import { useUserState } from './hooks/useUserState';
 import Sidebar from './components/Layout/Sidebar';
 import Dashboard from './components/Dashboard/Dashboard';
@@ -11,29 +14,29 @@ import {GraphDbRepositoriesService} from "./api";
 function App() {
   const { userState, authenticateUser, markAsExperienced } = useUserState();
 
-  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
-  const [activeWorkspaceId, setActiveWorkspaceId] = useState<string | null>(null);
+  const [activeRepositoryId, setActiveRepositoryId] = useState<string | null>(null);
+  const [tBoxes, setTBoxes] = useState<Workspace[]>([]);
+  const [activeTBoxId, setActiveTBoxId] = useState<string | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
 
   useEffect(() => {
-    GraphDbRepositoriesService.listRepositories().then((response) => {
-      console.log(response)
-    })
-  }, []);
+    if (activeRepositoryId) {
+      GraphDbRepositoriesService.listTboxes(activeRepositoryId).then((response) => {
+        const workspaces = response.map(r => ({
+          ...r,
+          id: r.tboxKey,
+          title: r.tboxKey
+        }))
+        setTBoxes(workspaces)
 
-  // Update workspaces when user state changes
-  useEffect(() => {
-    setWorkspaces([]);
-    
-    // Set active workspace for returning users
-    // if (userState.isAuthenticated && !userState.isFirstTime && newWorkspaces.length > 0) {
-    //   setActiveWorkspaceId(newWorkspaces[0].id);
-    // } else {
-    //   setActiveWorkspaceId(null);
-    // }
-  }, [userState.isAuthenticated, userState.isFirstTime]);
+        if (workspaces.length > 0) {
+          setActiveTBoxId(workspaces[0].id)
+        }
+      })
+    }
+  }, [activeRepositoryId]);
 
-  const activeWorkspace = workspaces.find(w => w.id === activeWorkspaceId);
+  const activeWorkspace = tBoxes.find(w => w.id === activeTBoxId);
 
   const handleGetStarted = () => {
     authenticateUser();
@@ -44,10 +47,6 @@ function App() {
     setShowCreateModal(true);
   };
 
-  const handleWorkspaceSelect = (workspaceId: string) => {
-    setActiveWorkspaceId(workspaceId);
-  };
-
   const handleCreateManual = (name: string, description: string) => {
     // Authenticate user if they're not already
     if (!userState.isAuthenticated) {
@@ -56,7 +55,7 @@ function App() {
 
     const newWorkspace: Workspace = {
       id: Date.now().toString(),
-      name,
+      title: name,
       description,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -66,10 +65,10 @@ function App() {
       relations: []
     };
     
-    const updatedWorkspaces = [...workspaces, newWorkspace];
-    setWorkspaces(updatedWorkspaces);
+    const updatedWorkspaces = [...tBoxes, newWorkspace];
+    setTBoxes(updatedWorkspaces);
     saveWorkspaces(updatedWorkspaces);
-    setActiveWorkspaceId(newWorkspace.id);
+    setActiveTBoxId(newWorkspace.id);
     setShowCreateModal(false);
     markAsExperienced();
   };
@@ -83,7 +82,7 @@ function App() {
     // Create workspace from preview data
     const newWorkspace: Workspace = {
       id: Date.now().toString(),
-      name,
+      title: name,
       description,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -93,22 +92,22 @@ function App() {
       relations: preview.relations
     };
     
-    const updatedWorkspaces = [...workspaces, newWorkspace];
-    setWorkspaces(updatedWorkspaces);
+    const updatedWorkspaces = [...tBoxes, newWorkspace];
+    setTBoxes(updatedWorkspaces);
     saveWorkspaces(updatedWorkspaces);
-    setActiveWorkspaceId(newWorkspace.id);
+    setActiveTBoxId(newWorkspace.id);
     setShowCreateModal(false);
     markAsExperienced();
   };
 
-  // Save workspaces to localStorage
+  // Save tBoxes to localStorage
   const saveWorkspaces = (workspaceList: Workspace[]) => {
     localStorage.setItem('openontology_workspaces', JSON.stringify(workspaceList));
   };
 
   const handleWorkspaceChange = (updatedWorkspace: Workspace) => {
-    const updatedWorkspaces = workspaces.map(w => w.id === updatedWorkspace.id ? updatedWorkspace : w);
-    setWorkspaces(updatedWorkspaces);
+    const updatedWorkspaces = tBoxes.map(w => w.id === updatedWorkspace.id ? updatedWorkspace : w);
+    setTBoxes(updatedWorkspaces);
     saveWorkspaces(updatedWorkspaces);
   };
 
@@ -120,9 +119,10 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50 flex">
       <Sidebar
-        workspaces={workspaces}
-        activeWorkspaceId={activeWorkspaceId}
-        onWorkspaceSelect={handleWorkspaceSelect}
+          setActiveRepositoryId={setActiveRepositoryId}
+        workspaces={tBoxes}
+        activeWorkspaceId={activeTBoxId}
+        onTBoxSelect={(tBoxId: string) => setActiveTBoxId(tBoxId)}
         onCreateWorkspace={handleCreateWorkspace}
       />
       

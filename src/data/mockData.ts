@@ -3,7 +3,7 @@ import { Workspace, OntologyClass, OntologyProperty, OntologyInstance, OntologyR
 export const mockWorkspaces: Workspace[] = [
   {
     id: '1',
-    name: 'Academic Knowledge Graph',
+    title: 'Academic Knowledge Graph',
     description: 'University course and faculty management ontology',
     createdAt: new Date('2024-01-15'),
     updatedAt: new Date('2024-01-20'),
@@ -170,7 +170,7 @@ export const mockWorkspaces: Workspace[] = [
   },
   {
     id: '2',
-    name: 'Product Catalog',
+    title: 'Product Catalog',
     description: 'E-commerce product classification system',
     createdAt: new Date('2024-01-10'),
     updatedAt: new Date('2024-01-18'),

@@ -13,6 +13,7 @@ import type { UpdateRepositoryResultDto } from '../models/UpdateRepositoryResult
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
+import {OntologyClass, OntologyInstance, OntologyProperty, OntologyRelation} from "../../types/ontology.ts";
 export class GraphDbRepositoriesService {
     /**
      * Получить конфигурацию репозитория
@@ -126,7 +127,7 @@ export class GraphDbRepositoriesService {
                  * @returns RepositorySummaryDto Список получен
                  * @throws ApiError
                  */
-                public static listRepositories(): CancelablePromise<RepositorySummaryDto> {
+                public static listRepositories(): CancelablePromise<RepositorySummaryDto[]> {
                     return __request(OpenAPI, {
                         method: 'GET',
                         url: '/ontology-access-service/api/repositories',
@@ -215,7 +216,7 @@ export class GraphDbRepositoriesService {
                      */
                     public static listTboxes(
                         repository: string,
-                    ): CancelablePromise<TboxGraph> {
+                    ): CancelablePromise<TboxGraph[]> {
                         return __request(OpenAPI, {
                             method: 'GET',
                             url: '/ontology-access-service/api/repositories/{repository}/tboxes',

@@ -19,18 +19,18 @@ export default function TopBar({
 }: TopBarProps) {
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
-  const [tempName, setTempName] = useState(workspace.name);
+  const [tempName, setTempName] = useState(workspace.title);
   const [tempDescription, setTempDescription] = useState(workspace.description || '');
 
   const handleSaveName = () => {
-    if (tempName.trim() && tempName !== workspace.name) {
+    if (tempName.trim() && tempName !== workspace.title) {
       onUpdateWorkspace({ name: tempName.trim() });
     }
     setIsEditingName(false);
   };
 
   const handleCancelName = () => {
-    setTempName(workspace.name);
+    setTempName(workspace.title);
     setIsEditingName(false);
   };
 
@@ -96,7 +96,7 @@ export default function TopBar({
             ) : (
               <div className="flex items-center space-x-2 group flex-1">
                 <h1 className="text-2xl font-bold text-gray-900 min-w-0 truncate">
-                  {workspace.name}
+                  {workspace.title}
                 </h1>
                 <button
                   onClick={() => setIsEditingName(true)}

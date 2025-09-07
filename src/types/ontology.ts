@@ -36,14 +36,14 @@ export interface OntologyRelation {
 
 export interface Workspace {
   id: string;
-  name: string;
+  title: string;
   description?: string;
-  createdAt: Date;
-  updatedAt: Date;
-  classes: OntologyClass[];
-  properties: OntologyProperty[];
-  instances: OntologyInstance[];
-  relations: OntologyRelation[];
+  createdAt?: Date;
+  updatedAt?: Date;
+  classes?: OntologyClass[];
+  properties?: OntologyProperty[];
+  instances?: OntologyInstance[];
+  relations?: OntologyRelation[];
 }
 
 export interface GraphNode {
