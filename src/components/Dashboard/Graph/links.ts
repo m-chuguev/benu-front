@@ -6,16 +6,27 @@ export function drawLinks(
     links: SimpleGraph["links"],
     colorForEdge: (kind?: string) => string
 ) {
-    const link =rootG.append("g").attr("fill", "none")
-        .selectAll("line").data(links).join("line")
+    const link = rootG
+        .append("g")
+        .attr("fill", "none")
+        .selectAll("line")
+        .data(links)
+        .join("line")
         .attr("stroke-width", 1.8)
         .attr("stroke", (d) => colorForEdge(d.kind))
         .attr("marker-end", (d) => `url(#arrow-${d.kind})`)
         .attr("stroke-dasharray", (d) => (d.kind === "OBJECT_PROPERTY" ? "4 3" : null));
 
 
-    const linkLabels = rootG.append("g").attr("font-size", 11).attr("fill", "#555")
-        .selectAll("text").data(links).join("text").attr("dy", -2).text((d) => d.label || "");
+    const linkLabels = rootG
+        .append("g")
+        .attr("font-size", 11)
+        .attr("fill", "#555")
+        .selectAll("text")
+        .data(links)
+        .join("text")
+        .attr("dy", -2)
+        .text((d) => d.label || "");
 
     const position = () => {
         link

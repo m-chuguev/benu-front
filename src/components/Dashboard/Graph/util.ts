@@ -75,7 +75,7 @@ export function mapOntology(
             _raw: n,
             degreeIn,
             degreeOut,
-            radius: radius,
+            radius,
         };
     });
 

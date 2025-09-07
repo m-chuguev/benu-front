@@ -40,12 +40,15 @@ export default function Graph({graphData}: GraphProps) {
 
     const svg = d3.select(svgRoot.current);
     svg.selectAll("* > :not(defs)").remove(); // очистка перед отсисовкой
-    const rootG = svg.append("g");
-    const defs = svg.append("defs");
+    const rootG           = svg.append("g");
+    const layerGrid       = rootG.append("g").attr("data-layer", "grid");
+    const layerLinks      = rootG.append("g").attr("data-layer", "links");
+    const layerNodes      = rootG.append("g").attr("data-layer", "nodes");
+    const defs            = svg.append("defs");
 // ============
 
     addGridDefs(svg);
-    addGridBackground(rootG);
+    addGridBackground(layerGrid);
 // ============
 
     installZoom(svg, rootG)
@@ -73,8 +76,8 @@ export default function Graph({graphData}: GraphProps) {
       .force("center", d3.forceCenter(0, 0))
       .velocityDecay(0.55);
 
-    const {position: posNodes} = drawNodes(rootG, data.nodes, colorForNode, setSelectNodeId, sim)
-    const {position: posLinks } = drawLinks(rootG, data.links, colorForLink);
+    const {position: posNodes} = drawNodes(layerNodes, data.nodes, colorForNode, setSelectNodeId, sim)
+    const {position: posLinks } = drawLinks(layerLinks, data.links, colorForLink);
 
     sim.on("tick", () => { posLinks(); posNodes(); });
 
