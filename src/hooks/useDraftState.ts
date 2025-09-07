@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
-import { Workspace, OntologyClass, OntologyInstance, OntologyProperty, OntologyRelation } from '../types/ontology';
+import { TBox, OntologyClass, OntologyInstance, OntologyProperty, OntologyRelation } from '../types/ontology';
 
 export interface DraftAction {
   id: string;
@@ -21,13 +21,13 @@ export interface DraftState {
   actions: DraftAction[];
 }
 
-export function useDraftState(initialWorkspace: Workspace) {
+export function useDraftState(initialWorkspace: TBox) {
   const [isEditMode, setIsEditMode] = useState(false);
   const [draft, setDraft] = useState<DraftState>({
-    classes: [...initialWorkspace.classes],
-    instances: [...initialWorkspace.instances],
-    properties: [...initialWorkspace.properties],
-    relations: [...initialWorkspace.relations],
+    classes: [...initialWorkspace?.classes ?? []],
+    instances: [...initialWorkspace?.instances ?? []],
+    properties: [...initialWorkspace?.properties ?? []],
+    relations: [...initialWorkspace?.relations ?? []],
     modifiedNodes: new Set(),
     modifiedEdges: new Set(),
     actions: []
@@ -55,10 +55,10 @@ export function useDraftState(initialWorkspace: Workspace) {
     setIsEditMode(true);
     // Reset draft to current workspace state
     setDraft({
-      classes: [...initialWorkspace.classes],
-      instances: [...initialWorkspace.instances],
-      properties: [...initialWorkspace.properties],
-      relations: [...initialWorkspace.relations],
+      classes: [...initialWorkspace?.classes ?? []],
+      instances: [...initialWorkspace?.instances ?? []],
+      properties: [...initialWorkspace?.properties ?? []],
+      relations: [...initialWorkspace?.relations ?? []],
       modifiedNodes: new Set(),
       modifiedEdges: new Set(),
       actions: []
@@ -68,10 +68,10 @@ export function useDraftState(initialWorkspace: Workspace) {
   const exitEditMode = useCallback(() => {
     setIsEditMode(false);
     setDraft({
-      classes: [...initialWorkspace.classes],
-      instances: [...initialWorkspace.instances],
-      properties: [...initialWorkspace.properties],
-      relations: [...initialWorkspace.relations],
+      classes: [...initialWorkspace?.classes ??[]],
+      instances: [...initialWorkspace?.instances ??[]],
+      properties: [...initialWorkspace?.properties ?? []],
+      relations: [...initialWorkspace?.relations ?? []],
       modifiedNodes: new Set(),
       modifiedEdges: new Set(),
       actions: []
@@ -86,8 +86,8 @@ export function useDraftState(initialWorkspace: Workspace) {
       const instanceIndex = prev.instances.findIndex(i => i.id === nodeId);
       
       let previousData: any = null;
-      let newClasses = [...prev.classes];
-      let newInstances = [...prev.instances];
+      let newClasses = [...prev?.classes ?? []];
+      let newInstances = [...prev?.instances ?? []];
 
       if (classIndex !== -1) {
         previousData = { ...prev.classes[classIndex] };
@@ -119,8 +119,8 @@ export function useDraftState(initialWorkspace: Workspace) {
       const instanceIndex = prev.instances.findIndex(i => i.id === nodeId);
       
       let previousPosition: { x: number; y: number } | null = null;
-      let newClasses = [...prev.classes];
-      let newInstances = [...prev.instances];
+      let newClasses = [...prev.classes ?? []];
+      let newInstances = [...prev.instances ?? []];
 
       if (classIndex !== -1) {
         previousPosition = { ...prev.classes[classIndex].position };
@@ -180,8 +180,8 @@ export function useDraftState(initialWorkspace: Workspace) {
       const instanceIndex = prev.instances.findIndex(i => i.id === nodeId);
       
       let deletedNode: any = null;
-      let newClasses = [...prev.classes];
-      let newInstances = [...prev.instances];
+      let newClasses = [...prev.classes ?? []];
+      let newInstances = [...prev.instances ?? []];
 
       if (classIndex !== -1) {
         deletedNode = prev.classes[classIndex];
@@ -320,13 +320,13 @@ export function useDraftState(initialWorkspace: Workspace) {
     return errors;
   }, [draft]);
 
-  const save = useCallback((onSuccess: (workspace: Workspace) => void) => {
+  const save = useCallback((onSuccess: (workspace: TBox) => void) => {
     const errors = validateDraft();
     if (errors.length > 0) {
       return { success: false, errors };
     }
 
-    const updatedWorkspace: Workspace = {
+    const updatedWorkspace: TBox = {
       ...initialWorkspace,
       classes: draft.classes,
       instances: draft.instances,

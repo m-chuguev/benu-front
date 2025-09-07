@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Workspace, OntologyClass, OntologyInstance } from '../../types/ontology';
+import { TBox, OntologyClass, OntologyInstance } from '../../types/ontology';
 import { 
   ChevronRight, 
   ChevronLeft, 
@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 
 interface ObjectInspectorProps {
-  workspace: Workspace;
+  workspace: TBox;
   selectedNodeId?: string;
   isOpen: boolean;
   onToggle: () => void;

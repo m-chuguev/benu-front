@@ -1,6 +1,6 @@
-import { Workspace, OntologyClass, OntologyProperty, OntologyInstance, OntologyRelation } from '../types/ontology';
+import { TBox, OntologyClass, OntologyProperty, OntologyInstance, OntologyRelation } from '../types/ontology';
 
-export const mockWorkspaces: Workspace[] = [
+export const mockWorkspaces: TBox[] = [
   {
     id: '1',
     title: 'Academic Knowledge Graph',

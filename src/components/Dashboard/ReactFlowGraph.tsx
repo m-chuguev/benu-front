@@ -12,11 +12,11 @@ import ReactFlow, {
   MarkerType,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { Workspace } from '../../types/ontology';
+import { TBox } from '../../types/ontology';
 import { hierarchicalLayout } from '../../utils/autoLayout';
 
 interface ReactFlowGraphProps {
-  workspace: Workspace;
+  workspace: TBox;
   onNodeSelect?: (nodeId: string) => void;
   selectedNodeId?: string;
   highlightedNodes?: string[];

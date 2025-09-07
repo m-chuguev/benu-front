@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import {
-  Workspace,
-  UploadPreview,
+  TBox,
+  UploadPreview
 } from './types/ontology';
 import { useUserState } from './hooks/useUserState';
 import Sidebar from './components/Layout/Sidebar';
@@ -15,7 +15,7 @@ function App() {
   const { userState, authenticateUser, markAsExperienced } = useUserState();
 
   const [activeRepositoryId, setActiveRepositoryId] = useState<string | null>(null);
-  const [tBoxes, setTBoxes] = useState<Workspace[]>([]);
+  const [tBoxes, setTBoxes] = useState<TBox[]>([]);
   const [activeTBoxId, setActiveTBoxId] = useState<string | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
 
@@ -25,7 +25,11 @@ function App() {
         const workspaces = response.map(r => ({
           ...r,
           id: r.tboxKey,
-          title: r.tboxKey
+          title: r.tboxKey,
+          classes: [],
+          properties: [],
+          instances: [],
+          relations: [],
         }))
         setTBoxes(workspaces)
 
@@ -48,12 +52,11 @@ function App() {
   };
 
   const handleCreateManual = (name: string, description: string) => {
-    // Authenticate user if they're not already
     if (!userState.isAuthenticated) {
       authenticateUser();
     }
 
-    const newWorkspace: Workspace = {
+    const newWorkspace: TBox = {
       id: Date.now().toString(),
       title: name,
       description,
@@ -80,7 +83,7 @@ function App() {
     }
 
     // Create workspace from preview data
-    const newWorkspace: Workspace = {
+    const newWorkspace: TBox = {
       id: Date.now().toString(),
       title: name,
       description,
@@ -101,11 +104,11 @@ function App() {
   };
 
   // Save tBoxes to localStorage
-  const saveWorkspaces = (workspaceList: Workspace[]) => {
+  const saveWorkspaces = (workspaceList: TBox[]) => {
     localStorage.setItem('openontology_workspaces', JSON.stringify(workspaceList));
   };
 
-  const handleWorkspaceChange = (updatedWorkspace: Workspace) => {
+  const handleWorkspaceChange = (updatedWorkspace: TBox) => {
     const updatedWorkspaces = tBoxes.map(w => w.id === updatedWorkspace.id ? updatedWorkspace : w);
     setTBoxes(updatedWorkspaces);
     saveWorkspaces(updatedWorkspaces);

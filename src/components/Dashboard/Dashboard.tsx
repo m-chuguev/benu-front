@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Workspace, OntologyClass, OntologyInstance, OntologyProperty } from '../../types/ontology';
+import { TBox, OntologyClass, OntologyInstance, OntologyProperty } from '../../types/ontology';
 import { useDraftState } from '../../hooks/useDraftState';
 import TopBar from './TopBar';
 import StatsPanel from './StatsPanel';
@@ -14,8 +14,8 @@ import { UploadPreview, ApprovedSections } from '../../types/ontology';
 import FullscreenGraphModal from './FullscreenGraphModal';
 
 interface DashboardProps {
-  workspace: Workspace;
-  onWorkspaceChange: (workspace: Workspace) => void;
+  workspace: TBox;
+  onWorkspaceChange: (workspace: TBox) => void;
 }
 
 
@@ -115,8 +115,8 @@ export default function Dashboard({ workspace, onWorkspaceChange }: DashboardPro
   };
 
   const handleNodeDuplicate = (nodeId: string) => {
-    const existingClass = draft.classes.find(c => c.id === nodeId);
-    const existingInstance = draft.instances.find(i => i.id === nodeId);
+    const existingClass = (draft?.classes ?? []).find(c => c.id === nodeId);
+    const existingInstance = (draft?.instances ?? []).find(i => i.id === nodeId);
     
     if (existingClass) {
       const duplicatedClass: OntologyClass = {
@@ -178,7 +178,7 @@ export default function Dashboard({ workspace, onWorkspaceChange }: DashboardPro
     ];
     
     // Create updated workspace with new data
-    const updatedWorkspace: Workspace = {
+    const updatedWorkspace: TBox = {
       ...workspace,
       updatedAt: new Date(),
       classes: [
@@ -233,7 +233,7 @@ export default function Dashboard({ workspace, onWorkspaceChange }: DashboardPro
     };
 
     // Update workspace
-    const updatedWorkspace: Workspace = {
+    const updatedWorkspace: TBox = {
       ...workspace,
       updatedAt: new Date(),
       classes: [...workspace.classes, newClass],
@@ -263,7 +263,7 @@ export default function Dashboard({ workspace, onWorkspaceChange }: DashboardPro
     };
 
     // Update workspace
-    const updatedWorkspace: Workspace = {
+    const updatedWorkspace: TBox = {
       ...workspace,
       updatedAt: new Date(),
       instances: [...workspace.instances, newInstance]
@@ -295,7 +295,7 @@ export default function Dashboard({ workspace, onWorkspaceChange }: DashboardPro
   };
 
   const handleUpdateWorkspace = (updates: { name?: string; description?: string }) => {
-    const updatedWorkspace: Workspace = {
+    const updatedWorkspace: TBox = {
       ...workspace,
       ...updates,
       updatedAt: new Date()
@@ -304,7 +304,7 @@ export default function Dashboard({ workspace, onWorkspaceChange }: DashboardPro
   };
 
   // Use draft workspace for display
-  const displayWorkspace: Workspace = {
+  const displayWorkspace: TBox = {
     ...workspace,
     classes: draft.classes,
     instances: draft.instances,

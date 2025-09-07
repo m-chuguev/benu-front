@@ -1,10 +1,10 @@
-import { Workspace } from '../../types/ontology';
+import { TBox } from '../../types/ontology';
 import {useEffect, useState} from 'react';
 import { FolderOpen, Plus, Database } from 'lucide-react';
 import {GraphDbRepositoriesService, RepositorySummaryDto} from "../../api";
 
 interface SidebarProps {
-  workspaces: Workspace[];
+  workspaces: TBox[];
   activeWorkspaceId: string | null;
   setActiveRepositoryId: (id: string) => void;
   onTBoxSelect: (workspaceId: string) => void;

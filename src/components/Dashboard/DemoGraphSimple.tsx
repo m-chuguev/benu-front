@@ -1,8 +1,8 @@
 import React from 'react';
-import { Workspace } from '../../types/ontology';
+import { TBox } from '../../types/ontology';
 
 interface DemoGraphSimpleProps {
-  workspace: Workspace;
+  workspace: TBox;
 }
 
 export default function DemoGraphSimple({ workspace }: DemoGraphSimpleProps) {

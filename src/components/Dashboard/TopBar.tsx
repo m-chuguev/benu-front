@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Brain, Edit3, Edit2, Check, X } from 'lucide-react';
-import { Workspace } from '../../types/ontology';
+import { TBox } from '../../types/ontology';
 
 interface TopBarProps {
-  workspace: Workspace;
+  workspace: TBox;
   isEditMode: boolean;
   onToggleEditMode: () => void;
   onToggleAI: () => void;

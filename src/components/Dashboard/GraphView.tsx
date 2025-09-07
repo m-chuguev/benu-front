@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
-import { Workspace, GraphNode, GraphEdge } from '../../types/ontology';
+import { TBox, GraphNode, GraphEdge } from '../../types/ontology';
 import { autoLayoutGraph, LayoutNode, LayoutEdge } from '../../utils/graphLayout';
 import { 
   Search, 
@@ -27,7 +27,7 @@ import {
 } from 'lucide-react';
 
 interface GraphViewProps {
-  workspace: Workspace;
+  workspace: TBox;
   onNodeSelect: (nodeId: string) => void;
   onToggleInspector: () => void;
   isInspectorOpen?: boolean;

@@ -1,12 +1,12 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import { Workspace } from '../../types/ontology';
+import { TBox } from '../../types/ontology';
 import GraphView from './GraphView';
 
 interface FullscreenGraphModalProps {
   isOpen: boolean;
   onClose: () => void;
-  workspace: Workspace;
+  workspace: TBox;
   selectedNodeId?: string;
   onNodeSelect: (nodeId: string) => void;
   highlightedNodes?: string[];

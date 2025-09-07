@@ -10,28 +10,28 @@ export default function StatsPanel({ workspace }: StatsPanelProps) {
   const stats = [
     {
       label: 'Classes',
-      value: workspace.classes.length,
+      value: workspace.classes?.length ?? 0,
       icon: BarChart3,
       color: 'bg-gray-500',
       description: 'T-Box concepts'
     },
     {
       label: 'Properties',
-      value: workspace.properties.length,
+      value: workspace.properties?.length ?? 0,
       icon: GitBranch,
       color: 'bg-teal-500',
       description: 'Relations & attributes'
     },
     {
       label: 'Relations',
-      value: workspace.relations.length,
+      value: workspace.relations?.length ?? 0,
       icon: Network,
       color: 'bg-orange-500',
       description: 'Graph connections'
     },
     {
       label: 'Instances',
-      value: workspace.instances.length,
+      value: workspace.instances?.length ?? 0,
       icon: Database,
       color: 'bg-blue-500',
       description: 'A-Box data points'

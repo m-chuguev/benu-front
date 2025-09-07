@@ -34,7 +34,7 @@ export interface OntologyRelation {
   type: 'tbox' | 'abox';
 }
 
-export interface Workspace {
+export interface TBox {
   id: string;
   title: string;
   description?: string;

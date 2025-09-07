@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { Workspace } from '../../types/ontology';
+import { TBox } from '../../types/ontology';
 
 interface DemoGraphViewProps {
-  workspace: Workspace;
+  workspace: TBox;
   onNodeSelect?: (nodeId: string) => void;
   selectedNodeId?: string;
   highlightedNodes?: string[];
