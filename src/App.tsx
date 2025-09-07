@@ -1,47 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { Workspace } from './types/ontology';
-import { mockWorkspaces } from './data/mockData';
+import { useState, useEffect } from 'react';
+import { Workspace, UploadPreview } from './types/ontology';
 import { useUserState } from './hooks/useUserState';
 import Sidebar from './components/Layout/Sidebar';
 import Dashboard from './components/Dashboard/Dashboard';
 import EmptyState from './components/Onboarding/EmptyState';
 import WelcomeScreen from './components/Onboarding/WelcomeScreen';
 import CreateWorkspaceModal from './components/Modals/CreateWorkspaceModal';
+import {GraphDbRepositoriesService} from "./api";
 
 function App() {
   const { userState, authenticateUser, markAsExperienced } = useUserState();
-  
-  // Initialize workspaces based on user state
-  const getInitialWorkspaces = (): Workspace[] => {
-    // Check if user has existing workspaces in localStorage
-    const savedWorkspaces = localStorage.getItem('openontology_workspaces');
-    if (userState.isAuthenticated && savedWorkspaces) {
-      try {
-        return JSON.parse(savedWorkspaces);
-      } catch {
-        // If parsing fails, return empty array
-        return [];
-      }
-    }
-    // All users (new and returning without saved workspaces) start empty
-    return [];
-  };
 
-  const [workspaces, setWorkspaces] = useState<Workspace[]>(getInitialWorkspaces());
+  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [activeWorkspaceId, setActiveWorkspaceId] = useState<string | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
 
+  useEffect(() => {
+    GraphDbRepositoriesService.listRepositories().then((response) => {
+      console.log(response)
+    })
+  }, []);
+
   // Update workspaces when user state changes
   useEffect(() => {
-    const newWorkspaces = getInitialWorkspaces();
-    setWorkspaces(newWorkspaces);
+    setWorkspaces([]);
     
     // Set active workspace for returning users
-    if (userState.isAuthenticated && !userState.isFirstTime && newWorkspaces.length > 0) {
-      setActiveWorkspaceId(newWorkspaces[0].id);
-    } else {
-      setActiveWorkspaceId(null);
-    }
+    // if (userState.isAuthenticated && !userState.isFirstTime && newWorkspaces.length > 0) {
+    //   setActiveWorkspaceId(newWorkspaces[0].id);
+    // } else {
+    //   setActiveWorkspaceId(null);
+    // }
   }, [userState.isAuthenticated, userState.isFirstTime]);
 
   const activeWorkspace = workspaces.find(w => w.id === activeWorkspaceId);
@@ -85,41 +74,23 @@ function App() {
     markAsExperienced();
   };
 
-  const handleCreateFromFile = (file: File, name: string, description: string) => {
+  const handleCreateFromFile = (preview: UploadPreview, name: string, description: string) => {
     // Authenticate user if they're not already
     if (!userState.isAuthenticated) {
       authenticateUser();
     }
 
-    // Simulate file processing - in real app, this would parse the file
+    // Create workspace from preview data
     const newWorkspace: Workspace = {
       id: Date.now().toString(),
       name,
       description,
       createdAt: new Date(),
       updatedAt: new Date(),
-      classes: [
-        {
-          id: 'imported-1',
-          name: 'ImportedClass',
-          description: 'Class imported from file',
-          properties: [],
-          type: 'tbox',
-          position: { x: 200, y: 150 }
-        }
-      ],
-      properties: [
-        {
-          id: 'imported-p1',
-          name: 'importedProperty',
-          description: 'Property imported from file',
-          domain: 'imported-1',
-          range: 'string',
-          type: 'tbox'
-        }
-      ],
-      instances: [],
-      relations: []
+      classes: preview.classes,
+      properties: preview.properties,
+      instances: preview.instances,
+      relations: preview.relations
     };
     
     const updatedWorkspaces = [...workspaces, newWorkspace];

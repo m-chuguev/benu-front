@@ -68,3 +68,9 @@ export interface UploadPreview {
   instances: OntologyInstance[];
   relations: OntologyRelation[];
 }
+
+export interface ApprovedSections {
+  classes: boolean;
+  properties: boolean;
+  instances: boolean;
+}

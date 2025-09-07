@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
-import { X, Upload, Edit3 } from 'lucide-react';
+import { X, Upload, Edit3, Loader2 } from 'lucide-react';
+import { UploadPreview, ApprovedSections } from '../../types/ontology';
+import FilePreviewModal from './FilePreviewModal';
+import { parseOntologyFile } from '../../utils/fileParser';
 
 interface CreateWorkspaceModalProps {
   isOpen: boolean;
   onClose: () => void;
   onCreateManual: (name: string, description: string) => void;
-  onCreateFromFile: (file: File, name: string, description: string) => void;
+  onCreateFromFile: (preview: UploadPreview, name: string, description: string) => void;
 }
+
+
 
 export default function CreateWorkspaceModal({ 
   isOpen, 
@@ -18,6 +23,9 @@ export default function CreateWorkspaceModal({
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [file, setFile] = useState<File | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
+  const [uploadPreview, setUploadPreview] = useState<UploadPreview | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   if (!isOpen) return null;
 
@@ -26,6 +34,9 @@ export default function CreateWorkspaceModal({
     setName('');
     setDescription('');
     setFile(null);
+    setShowPreview(false);
+    setUploadPreview(null);
+    setIsProcessing(false);
   };
 
   const handleClose = () => {
@@ -40,11 +51,25 @@ export default function CreateWorkspaceModal({
     }
   };
 
-  const handleCreateFromFile = () => {
-    if (file && name.trim()) {
-      onCreateFromFile(file, name.trim(), description.trim());
-      handleClose();
+  const handleProcessFile = async () => {
+    if (!file || !name.trim()) return;
+    
+    setIsProcessing(true);
+    try {
+      const preview = await parseOntologyFile(file);
+      setUploadPreview(preview);
+      setShowPreview(true);
+    } catch (error) {
+      console.error('Error processing file:', error);
+      // TODO: Show error message
+    } finally {
+      setIsProcessing(false);
     }
+  };
+
+  const handleApprovePreview = (preview: UploadPreview, approvedSections: ApprovedSections) => {
+    onCreateFromFile(preview, name.trim(), description.trim());
+    handleClose();
   };
 
   return (
@@ -229,17 +254,27 @@ export default function CreateWorkspaceModal({
                   Back
                 </button>
                 <button
-                  onClick={handleCreateFromFile}
-                  disabled={!file || !name.trim()}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                  onClick={handleProcessFile}
+                  disabled={!file || !name.trim() || isProcessing}
+                  className="inline-flex items-center space-x-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
                 >
-                  Import Workspace
+                  {isProcessing && <Loader2 size={16} className="animate-spin" />}
+                  <span>{isProcessing ? 'Processing...' : 'Preview Import'}</span>
                 </button>
               </div>
             </div>
           )}
         </div>
       </div>
+
+      {/* File Preview Modal */}
+      <FilePreviewModal
+        isOpen={showPreview}
+        onClose={() => setShowPreview(false)}
+        preview={uploadPreview}
+        fileName={file?.name || ''}
+        onApprove={handleApprovePreview}
+      />
     </div>
   );
 }

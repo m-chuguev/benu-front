@@ -112,7 +112,7 @@ export default function ObjectInspector({
 
   return (
     <>
-      <div className="w-80 bg-white border-l border-gray-200 flex flex-col shadow-lg h-full overflow-hidden">
+      <div className="w-72 bg-white border-l border-gray-200 flex flex-col shadow-lg h-full overflow-hidden">
         {/* Header */}
         <div className="p-4 border-b border-gray-200 bg-gray-50">
           <div className="flex items-center justify-between">

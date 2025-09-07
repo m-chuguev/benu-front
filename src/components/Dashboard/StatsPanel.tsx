@@ -44,8 +44,8 @@ export default function StatsPanel({ workspace }: StatsPanelProps) {
       description: 'Project dates',
       customContent: (
         <div className="text-xs text-gray-600 space-y-1">
-          <div>Updated {workspace.updatedAt.toLocaleDateString()}</div>
-          <div>Created {workspace.createdAt.toLocaleDateString()}</div>
+          <div>Updated {new Date(workspace.updatedAt).toLocaleDateString()}</div>
+          <div>Created {new Date(workspace.createdAt).toLocaleDateString()}</div>
         </div>
       )
     }

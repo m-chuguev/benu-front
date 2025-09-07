@@ -3,14 +3,14 @@ import { Workspace, OntologyClass, OntologyInstance, OntologyProperty } from '..
 import { useDraftState } from '../../hooks/useDraftState';
 import TopBar from './TopBar';
 import StatsPanel from './StatsPanel';
-import GraphView from './GraphView';
+import DemoGraphSimple from './DemoGraphSimple';
 import ObjectInspector from './ObjectInspector';
 import AIPanel from './AIPanel';
 import UploadDataModal from '../Modals/UploadDataModal';
 import AddClassModal from '../Modals/AddClassModal';
 import AddInstanceModal from '../Modals/AddInstanceModal';
 import ValidationModal from '../Modals/ValidationModal';
-import { UploadPreview } from '../../types/ontology';
+import { UploadPreview, ApprovedSections } from '../../types/ontology';
 import FullscreenGraphModal from './FullscreenGraphModal';
 
 interface DashboardProps {
@@ -18,11 +18,7 @@ interface DashboardProps {
   onWorkspaceChange: (workspace: Workspace) => void;
 }
 
-interface ApprovedSections {
-  classes: boolean;
-  properties: boolean;
-  instances: boolean;
-}
+
 
 interface Property {
   id: string;
@@ -32,7 +28,7 @@ interface Property {
 
 export default function Dashboard({ workspace, onWorkspaceChange }: DashboardProps) {
   const [selectedNodeId, setSelectedNodeId] = useState<string>();
-  const [isInspectorOpen, setIsInspectorOpen] = useState(false);
+  const [isInspectorOpen, setIsInspectorOpen] = useState(true);
   const [isAIPanelOpen, setIsAIPanelOpen] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showAddClassModal, setShowAddClassModal] = useState(false);
@@ -61,9 +57,6 @@ export default function Dashboard({ workspace, onWorkspaceChange }: DashboardPro
 
   const handleNodeSelect = (nodeId: string) => {
     setSelectedNodeId(nodeId);
-    if (!isInspectorOpen) {
-      setIsInspectorOpen(true);
-    }
   };
 
   const handleToggleInspector = () => {
@@ -75,7 +68,6 @@ export default function Dashboard({ workspace, onWorkspaceChange }: DashboardPro
       exitEditMode();
     } else {
       enterEditMode();
-      setIsInspectorOpen(true); // Auto-open inspector in edit mode
     }
   };
 
@@ -120,9 +112,6 @@ export default function Dashboard({ workspace, onWorkspaceChange }: DashboardPro
 
   const handleNodeEdit = (nodeId: string) => {
     setSelectedNodeId(nodeId);
-    if (!isInspectorOpen) {
-      setIsInspectorOpen(true);
-    }
   };
 
   const handleNodeDuplicate = (nodeId: string) => {
@@ -291,9 +280,6 @@ export default function Dashboard({ workspace, onWorkspaceChange }: DashboardPro
 
   const handleNavigateToNode = (nodeId: string) => {
     setSelectedNodeId(nodeId);
-    if (!isInspectorOpen) {
-      setIsInspectorOpen(true);
-    }
   };
 
   const handleUpdateNode = (nodeId: string, updates: any) => {
@@ -338,35 +324,20 @@ export default function Dashboard({ workspace, onWorkspaceChange }: DashboardPro
       />
 
       {/* Stats Panel */}
-      <StatsPanel workspace={displayWorkspace} />
+      <StatsPanel workspace={workspace} />
 
       {/* Main Content */}
       <div className="flex-1 flex">
         {/* Graph View */}
         <div className="flex-1 flex flex-col">
-          <GraphView
-            workspace={displayWorkspace}
-            onNodeSelect={handleNodeSelect}
-            onToggleInspector={handleToggleInspector}
-            isInspectorOpen={isInspectorOpen}
-            selectedNodeId={selectedNodeId}
-            highlightedNodes={highlightedNodes}
-            isEditMode={isEditMode}
-            modifiedNodes={draft.modifiedNodes}
-            modifiedEdges={draft.modifiedEdges}
-            onNodeMove={handleNodeMove}
-            onNodeEdit={handleNodeEdit}
-            onNodeDelete={handleDelete}
-            onNodeDuplicate={handleNodeDuplicate}
-            onRelationEdit={handleRelationEdit}
-            onRelationDelete={handleRelationDelete}
-            onOpenFullscreen={handleOpenFullscreen}
+        <DemoGraphSimple
+            workspace={workspace}
           />
         </div>
         
         {/* Object Inspector */}
         <ObjectInspector
-          workspace={displayWorkspace}
+          workspace={workspace}
           selectedNodeId={selectedNodeId}
           isOpen={isInspectorOpen}
           onToggle={handleToggleInspector}

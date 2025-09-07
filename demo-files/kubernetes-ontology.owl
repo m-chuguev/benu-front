@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:owl="http://www.w3.org/2002/07/owl#"
+         xmlns:k8s="http://kubernetes.io/ontology#">
+
+  <!-- Classes -->
+  <owl:Class rdf:about="http://kubernetes.io/ontology#Controller">
+    <rdfs:label>Controller</rdfs:label>
+    <rdfs:comment>Main system controller that manages other resources</rdfs:comment>
+  </owl:Class>
+
+  <owl:Class rdf:about="http://kubernetes.io/ontology#Pod">
+    <rdfs:label>Pod</rdfs:label>
+    <rdfs:comment>Container pod that runs applications</rdfs:comment>
+  </owl:Class>
+
+  <owl:Class rdf:about="http://kubernetes.io/ontology#Service">
+    <rdfs:label>Service</rdfs:label>
+    <rdfs:comment>Kubernetes service for networking</rdfs:comment>
+  </owl:Class>
+
+  <owl:Class rdf:about="http://kubernetes.io/ontology#Deployment">
+    <rdfs:label>Deployment</rdfs:label>
+    <rdfs:comment>Application deployment configuration</rdfs:comment>
+  </owl:Class>
+
+  <owl:Class rdf:about="http://kubernetes.io/ontology#DeploymentStrategy">
+    <rdfs:label>DeploymentStrategy</rdfs:label>
+    <rdfs:comment>Strategy for application deployment</rdfs:comment>
+  </owl:Class>
+
+  <owl:Class rdf:about="http://kubernetes.io/ontology#RollingUpdate">
+    <rdfs:label>RollingUpdate</rdfs:label>
+    <rdfs:comment>Rolling update deployment strategy</rdfs:comment>
+    <rdfs:subClassOf rdf:resource="http://kubernetes.io/ontology#DeploymentStrategy"/>
+  </owl:Class>
+
+  <!-- Properties -->
+  <owl:ObjectProperty rdf:about="http://kubernetes.io/ontology#controls">
+    <rdfs:label>controls</rdfs:label>
+    <rdfs:domain rdf:resource="http://kubernetes.io/ontology#Controller"/>
+    <rdfs:range rdf:resource="http://kubernetes.io/ontology#Pod"/>
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:about="http://kubernetes.io/ontology#usesStrategy">
+    <rdfs:label>usesStrategy</rdfs:label>
+    <rdfs:domain rdf:resource="http://kubernetes.io/ontology#Deployment"/>
+    <rdfs:range rdf:resource="http://kubernetes.io/ontology#DeploymentStrategy"/>
+  </owl:ObjectProperty>
+
+</rdf:RDF>

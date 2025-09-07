@@ -7,4 +7,13 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
+  server: {
+    proxy: {
+      "/proxyApi": {
+        target: "https://app.bennu.cloud/",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/proxyApi/, ""),
+      },
+    },
+  },
 });

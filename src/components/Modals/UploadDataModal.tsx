@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { X, Upload, FileUp, Check, AlertCircle, CheckSquare, Square } from 'lucide-react';
-import { UploadPreview } from '../../types/ontology';
+import { UploadPreview, ApprovedSections } from '../../types/ontology';
+import { parseOntologyFile } from '../../utils/fileParser';
 
 interface UploadDataModalProps {
   isOpen: boolean;
@@ -8,11 +9,7 @@ interface UploadDataModalProps {
   onApprove: (preview: UploadPreview, approvedSections: ApprovedSections) => void;
 }
 
-interface ApprovedSections {
-  classes: boolean;
-  properties: boolean;
-  instances: boolean;
-}
+
 
 export default function UploadDataModal({ isOpen, onClose, onApprove }: UploadDataModalProps) {
   const [step, setStep] = useState<'upload' | 'preview'>('upload');
@@ -45,135 +42,21 @@ export default function UploadDataModal({ isOpen, onClose, onApprove }: UploadDa
     }
   }, []);
 
-  const handleFileSelect = (selectedFile: File) => {
+  const handleFileSelect = async (selectedFile: File) => {
     setFile(selectedFile);
     setIsProcessing(true);
     
-    // Simulate file processing
-    setTimeout(() => {
-      const mockPreview: UploadPreview = {
-        classes: [
-          {
-            id: 'new-c1',
-            name: 'Vehicle',
-            description: 'Transportation device',
-            properties: ['new-p1', 'new-p2'],
-            type: 'tbox',
-            position: { x: 150, y: 150 }
-          },
-          {
-            id: 'new-c2',
-            name: 'Car',
-            description: 'Four-wheeled vehicle',
-            properties: ['new-p3'],
-            parentClass: 'new-c1',
-            type: 'tbox',
-            position: { x: 250, y: 250 }
-          },
-          {
-            id: 'new-c3',
-            name: 'Truck',
-            description: 'Heavy-duty vehicle',
-            properties: ['new-p4'],
-            parentClass: 'new-c1',
-            type: 'tbox',
-            position: { x: 350, y: 250 }
-          }
-        ],
-        properties: [
-          {
-            id: 'new-p1',
-            name: 'hasModel',
-            description: 'Vehicle model name',
-            domain: 'new-c1',
-            range: 'string',
-            type: 'tbox'
-          },
-          {
-            id: 'new-p2',
-            name: 'hasYear',
-            description: 'Manufacturing year',
-            domain: 'new-c1',
-            range: 'number',
-            type: 'tbox'
-          },
-          {
-            id: 'new-p3',
-            name: 'hasSeats',
-            description: 'Number of seats',
-            domain: 'new-c2',
-            range: 'number',
-            type: 'tbox'
-          },
-          {
-            id: 'new-p4',
-            name: 'hasCapacity',
-            description: 'Cargo capacity',
-            domain: 'new-c3',
-            range: 'number',
-            type: 'tbox'
-          }
-        ],
-        instances: [
-          {
-            id: 'new-i1',
-            name: 'My Toyota Camry',
-            classId: 'new-c2',
-            properties: {
-              hasModel: 'Camry',
-              hasYear: 2023,
-              hasSeats: 5
-            },
-            type: 'abox',
-            position: { x: 200, y: 350 }
-          },
-          {
-            id: 'new-i2',
-            name: 'Honda Civic',
-            classId: 'new-c2',
-            properties: {
-              hasModel: 'Civic',
-              hasYear: 2022,
-              hasSeats: 5
-            },
-            type: 'abox',
-            position: { x: 300, y: 350 }
-          },
-          {
-            id: 'new-i3',
-            name: 'Ford F-150',
-            classId: 'new-c3',
-            properties: {
-              hasModel: 'F-150',
-              hasYear: 2024,
-              hasCapacity: 1000
-            },
-            type: 'abox',
-            position: { x: 400, y: 350 }
-          }
-        ],
-        relations: [
-          {
-            id: 'new-r1',
-            sourceId: 'new-c2',
-            targetId: 'new-c1',
-            propertyId: 'inheritance',
-            type: 'tbox'
-          },
-          {
-            id: 'new-r2',
-            sourceId: 'new-c3',
-            targetId: 'new-c1',
-            propertyId: 'inheritance',
-            type: 'tbox'
-          }
-        ]
-      };
-      
-      setPreview(mockPreview);
+    try {
+      // Use real file parsing
+      const parsedPreview = await parseOntologyFile(selectedFile);
+      setPreview(parsedPreview);
       setIsProcessing(false);
       setStep('preview');
-    }, 2000);
+    } catch (error) {
+      console.error('Error parsing file:', error);
+      setIsProcessing(false);
+      // You could add error handling here
+    }
   };
 
   const handleApprove = () => {
@@ -205,7 +88,7 @@ export default function UploadDataModal({ isOpen, onClose, onApprove }: UploadDa
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-hidden">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl mx-4 max-h-[90vh] flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div>
@@ -223,9 +106,9 @@ export default function UploadDataModal({ isOpen, onClose, onApprove }: UploadDa
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto p-6">
           {step === 'upload' && (
-            <div className="p-6">
+            <div>
               {!file && !isProcessing ? (
                 <div
                   className={`border-2 border-dashed rounded-xl p-12 text-center transition-all ${
@@ -287,7 +170,7 @@ export default function UploadDataModal({ isOpen, onClose, onApprove }: UploadDa
           )}
 
           {step === 'preview' && preview && (
-            <div className="p-6 space-y-6">
+            <div className="space-y-6">
               {/* Success Message */}
               <div className="flex items-center space-x-3 p-4 bg-green-50 border border-green-200 rounded-lg">
                 <Check size={20} className="text-green-600" />

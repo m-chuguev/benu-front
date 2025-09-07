@@ -1,0 +1,65 @@
+@prefix k8s: <http://kubernetes.io/ontology#> .
+@prefix inst: <http://kubernetes.io/instances#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Production Environment Instances
+
+# Controller Instance
+inst:web-controller-001 a k8s:Controller ;
+    k8s:name "WebController-001" ;
+    k8s:namespace "production" ;
+    k8s:replicas "3"^^xsd:int .
+
+# Pod Instances  
+inst:api-pod-1 a k8s:Pod ;
+    k8s:name "api-pod-1" ;
+    k8s:status "Running" ;
+    k8s:restartCount "0"^^xsd:int ;
+    k8s:cpu "200m" ;
+    k8s:memory "512Mi" .
+
+inst:api-pod-2 a k8s:Pod ;
+    k8s:name "api-pod-2" ;
+    k8s:status "Running" ;
+    k8s:restartCount "1"^^xsd:int ;
+    k8s:cpu "180m" ;
+    k8s:memory "480Mi" .
+
+inst:api-pod-3 a k8s:Pod ;
+    k8s:name "api-pod-3" ;
+    k8s:status "Pending" ;
+    k8s:restartCount "0"^^xsd:int ;
+    k8s:cpu "0m" ;
+    k8s:memory "0Mi" .
+
+# Service Instance
+inst:web-service a k8s:Service ;
+    k8s:name "web-service" ;
+    k8s:port "80"^^xsd:int ;
+    k8s:targetPort "8080"^^xsd:int ;
+    k8s:serviceType "LoadBalancer" .
+
+# Namespace Instance
+inst:production a k8s:Namespace ;
+    k8s:name "production" ;
+    k8s:createdAt "2024-01-15" ;
+    k8s:resourceQuota "high" .
+
+# Deployment Instance
+inst:web-deployment a k8s:Deployment ;
+    k8s:name "web-deployment" ;
+    k8s:replicas "3"^^xsd:int ;
+    k8s:image "nginx:1.21" .
+
+# Strategy Instance
+inst:rolling-strategy a k8s:RollingUpdate ;
+    k8s:maxUnavailable "25%" ;
+    k8s:maxSurge "25%" ;
+    k8s:progressDeadlineSeconds "600"^^xsd:int .
+
+# Relationships (instances connecting to other instances)
+inst:web-controller-001 k8s:controls inst:api-pod-1 .
+inst:web-controller-001 k8s:controls inst:api-pod-2 .
+inst:web-controller-001 k8s:controls inst:api-pod-3 .
+inst:web-deployment k8s:usesStrategy inst:rolling-strategy .
+inst:web-service k8s:exposedIn inst:production .

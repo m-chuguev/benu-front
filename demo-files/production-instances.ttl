@@ -1,0 +1,47 @@
+@prefix k8s: <http://kubernetes.io/ontology#> .
+@prefix inst: <http://kubernetes.io/instances#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Production Controller Instance
+inst:web-controller-001 a k8s:Controller ;
+    k8s:name "WebController-001" ;
+    k8s:namespace "production" ;
+    k8s:replicas "3"^^xsd:int .
+
+# Pod Instances
+inst:api-pod-1 a k8s:Pod ;
+    k8s:name "api-pod-1" ;
+    k8s:status "Running" ;
+    k8s:restartCount "0"^^xsd:int .
+
+inst:api-pod-2 a k8s:Pod ;
+    k8s:name "api-pod-2" ;
+    k8s:status "Running" ;
+    k8s:restartCount "1"^^xsd:int .
+
+inst:api-pod-3 a k8s:Pod ;
+    k8s:name "api-pod-3" ;
+    k8s:status "Pending" ;
+    k8s:restartCount "0"^^xsd:int .
+
+# Service Instance
+inst:web-service a k8s:Service ;
+    k8s:name "web-service" ;
+    k8s:port "80"^^xsd:int ;
+    k8s:targetPort "8080"^^xsd:int .
+
+# Namespace Instance
+inst:production a k8s:Namespace ;
+    k8s:name "production" ;
+    k8s:createdAt "2024-01-15" .
+
+# Rolling Update Strategy Instance
+inst:rolling-strategy a k8s:RollingUpdate ;
+    k8s:maxUnavailable "25%" ;
+    k8s:maxSurge "25%" .
+
+# Relationships
+inst:web-controller-001 k8s:controls inst:api-pod-1 .
+inst:web-controller-001 k8s:controls inst:api-pod-2 .
+inst:web-controller-001 k8s:controls inst:api-pod-3 .
+inst:web-service k8s:exposedIn inst:production .
