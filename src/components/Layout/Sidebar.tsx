@@ -54,7 +54,7 @@ export default function Sidebar({ workspaces, activeWorkspaceId, setActiveReposi
       {/* Workspaces */}
       <div className="flex-1 p-4">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-medium text-gray-700">Workspaces</h2>
+          <h2 className="text-sm font-medium text-gray-700">T-Boxes</h2>
           <button
             onClick={onCreateWorkspace}
             className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-colors"

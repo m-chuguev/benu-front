@@ -15,7 +15,7 @@ export function drawNodes(
         .selectAll<SVGCircleElement, NodeDatum>("circle")
         .data(nodes)
         .join("circle")
-        .attr("r", 10)
+        .attr("r", n => n.radius)
         .attr("fill", d => colorForNode(d.type))
         .style("cursor", "grab")
         .on("click", (_, d) => onSelectNode(d.id))
@@ -36,7 +36,7 @@ export function drawNodes(
         .data(nodes)
         .join("text")
         .attr("text-anchor", "middle")
-        .attr("dy", 22)
+        .attr("dy", d => d.radius + 12)
         .text(d => d.label ?? d.id);
 
 

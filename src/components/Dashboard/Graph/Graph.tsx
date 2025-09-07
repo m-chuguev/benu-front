@@ -4,7 +4,6 @@ import * as d3 from "d3";
 import type {GraphDto} from "../../../api";
 import {mapOntology, NodeDatum, SimpleGraph} from "./util";
 import {addGridBackground, addGridDefs} from "./grid-bg.ts";
-import {SimulationLinkDatum} from "d3";
 import {installZoom} from "./zoom.ts";
 import {ensureMarker} from "./markers.ts";
 import {drawNodes} from "./nodes.ts";
@@ -58,16 +57,21 @@ export default function Graph({graphData}: GraphProps) {
 
     const sim = d3
       .forceSimulation<NodeDatum>(data.nodes)
-      .force(
-        "link",
-        d3
-          .forceLink<NodeDatum, SimulationLinkDatum<any>>(data.links as any)
-          .id(d => d.id)
-          .distance(80)
+      .force("link",
+          d3.forceLink<NodeDatum, any>(data.links)
+              .id(d => d.id)
+              .distance(100)
       )
-      .force("charge", d3.forceManyBody().strength(-400))
+      .force("charge",
+          d3.forceManyBody()
+              .strength(-400)
+              .distanceMax(800)
+      )
+      .force("x", d3.forceX(0).strength(0.06))
+      .force("y", d3.forceY(0).strength(0.06))
+      .force("collide", d3.forceCollide<NodeDatum>().radius((d) => d.radius + 6))
       .force("center", d3.forceCenter(0, 0))
-      .force("collide", d3.forceCollide().radius(18));
+      .velocityDecay(0.55);
 
     const {position: posNodes} = drawNodes(rootG, data.nodes, colorForNode, setSelectNodeId, sim)
     const {position: posLinks } = drawLinks(rootG, data.links, colorForLink);
