@@ -3,7 +3,7 @@ import { TBox, OntologyClass, OntologyProperty, OntologyInstance, OntologyRelati
 export const mockWorkspaces: TBox[] = [
   {
     id: '1',
-    title: 'Academic Knowledge Graph',
+    label: 'Academic Knowledge Graph',
     description: 'University course and faculty management ontology',
     createdAt: new Date('2024-01-15'),
     updatedAt: new Date('2024-01-20'),
@@ -170,7 +170,7 @@ export const mockWorkspaces: TBox[] = [
   },
   {
     id: '2',
-    title: 'Product Catalog',
+    label: 'Product Catalog',
     description: 'E-commerce product classification system',
     createdAt: new Date('2024-01-10'),
     updatedAt: new Date('2024-01-18'),

@@ -5,13 +5,13 @@ import {GraphDbRepositoriesService, RepositorySummaryDto} from "../../api";
 
 interface SidebarProps {
   workspaces: TBox[];
-  activeWorkspaceId: string | null;
+  activeTBoxId: string | null;
   setActiveRepositoryId: (id: string) => void;
   onTBoxSelect: (workspaceId: string) => void;
   onCreateWorkspace: () => void;
 }
 
-export default function Sidebar({ workspaces, activeWorkspaceId, setActiveRepositoryId, onTBoxSelect, onCreateWorkspace }: SidebarProps) {
+export default function Sidebar({ workspaces, activeTBoxId, setActiveRepositoryId, onTBoxSelect, onCreateWorkspace }: SidebarProps) {
   const [repositories, setRepositories] = useState<RepositorySummaryDto[]>([]);
 
   useEffect(() => {
@@ -69,17 +69,17 @@ export default function Sidebar({ workspaces, activeWorkspaceId, setActiveReposi
               key={workspace.id}
               onClick={() => onTBoxSelect(workspace.id)}
               className={`w-full text-left p-3 rounded-lg transition-colors ${
-                activeWorkspaceId === workspace.id
+                activeTBoxId === workspace.id
                   ? 'bg-blue-50 text-blue-900 border border-blue-200'
                   : 'text-gray-700 hover:bg-gray-50'
               }`}
             >
               <div className="flex items-center space-x-3">
                 <FolderOpen size={16} className={
-                  activeWorkspaceId === workspace.id ? 'text-blue-600' : 'text-gray-500'
+                  activeTBoxId === workspace.id ? 'text-blue-600' : 'text-gray-500'
                 } />
                 <div className="flex-1 min-w-0">
-                  <div className="font-medium truncate">{workspace.title}</div>
+                  <div className="font-medium truncate">{workspace.label}</div>
                   <div className="text-xs text-gray-500 mt-0.5">
                     {workspace.classes?.length}C • {workspace.instances?.length}I
                   </div>

@@ -22,25 +22,25 @@ function App() {
   useEffect(() => {
     if (activeRepositoryId) {
       GraphDbRepositoriesService.listTboxes(activeRepositoryId).then((response) => {
-        const workspaces = response.map(r => ({
+        const result = response.map(r => ({
           ...r,
           id: r.tboxKey,
-          title: r.tboxKey,
+          label: r.label ?? r.tboxKey,
           classes: [],
           properties: [],
           instances: [],
           relations: [],
         }))
-        setTBoxes(workspaces)
+        setTBoxes(result)
 
-        if (workspaces.length > 0) {
-          setActiveTBoxId(workspaces[0].id)
+        if (result.length > 0) {
+          setActiveTBoxId(result[0].id)
         }
       })
     }
   }, [activeRepositoryId]);
 
-  const activeWorkspace = tBoxes.find(w => w.id === activeTBoxId);
+  const activeTBox = tBoxes.find(w => w.id === activeTBoxId);
 
   const handleGetStarted = () => {
     authenticateUser();
@@ -58,7 +58,7 @@ function App() {
 
     const newWorkspace: TBox = {
       id: Date.now().toString(),
-      title: name,
+      label: name,
       description,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -67,7 +67,7 @@ function App() {
       instances: [],
       relations: []
     };
-    
+
     const updatedWorkspaces = [...tBoxes, newWorkspace];
     setTBoxes(updatedWorkspaces);
     saveWorkspaces(updatedWorkspaces);
@@ -85,7 +85,7 @@ function App() {
     // Create workspace from preview data
     const newWorkspace: TBox = {
       id: Date.now().toString(),
-      title: name,
+      label: name,
       description,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -108,10 +108,12 @@ function App() {
     localStorage.setItem('openontology_workspaces', JSON.stringify(workspaceList));
   };
 
-  const handleWorkspaceChange = (updatedWorkspace: TBox) => {
-    const updatedWorkspaces = tBoxes.map(w => w.id === updatedWorkspace.id ? updatedWorkspace : w);
-    setTBoxes(updatedWorkspaces);
-    saveWorkspaces(updatedWorkspaces);
+  const handleTBoxChange = (tbox: TBox) => {
+    // GraphDbRepositoriesService.updateRepository()
+    console.log(tbox)
+    // const updatedWorkspaces = tBoxes.map(w => w.id === tbox.id ? tbox : w);
+    // setTBoxes(updatedWorkspaces);
+    // saveWorkspaces(updatedWorkspaces);
   };
 
   // Show welcome screen for first-time users
@@ -124,18 +126,18 @@ function App() {
       <Sidebar
           setActiveRepositoryId={setActiveRepositoryId}
         workspaces={tBoxes}
-        activeWorkspaceId={activeTBoxId}
+        activeTBoxId={activeTBoxId}
         onTBoxSelect={(tBoxId: string) => setActiveTBoxId(tBoxId)}
         onCreateWorkspace={handleCreateWorkspace}
       />
       
-      {activeWorkspace ? (
+      {activeTBox ? (
         <div className="flex-1 flex flex-col">
           <Dashboard
               activeTBoxId={activeTBoxId}
               activeRepositoryId={activeRepositoryId}
-            workspace={activeWorkspace}
-            onWorkspaceChange={handleWorkspaceChange}
+            activeTBox={activeTBox}
+            onTBoxChange={handleTBoxChange}
           />
         </div>
       ) : (

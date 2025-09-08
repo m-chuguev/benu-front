@@ -14,5 +14,6 @@ export type TboxGraph = {
      * IRI именованного графа T-Box
      */
     graphIri?: string;
+    label?: string
 };
 

@@ -36,7 +36,7 @@ export interface OntologyRelation {
 
 export interface TBox {
   id: string;
-  title: string;
+  label: string;
   description?: string;
   createdAt?: Date;
   updatedAt?: Date;

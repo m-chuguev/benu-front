@@ -15,8 +15,8 @@ import Graph from "./Graph/Graph.tsx";
 import {GraphDto, OntologyGraphViewService} from "../../api";
 
 interface DashboardProps {
-  workspace: TBox;
-  onWorkspaceChange: (workspace: TBox) => void;
+  activeTBox: TBox;
+  onTBoxChange: (workspace: TBox) => void;
   activeRepositoryId: string | null,
   activeTBoxId: string | null
 }
@@ -29,7 +29,7 @@ interface Property {
   type: 'string' | 'number' | 'boolean' | 'date' | 'IRI';
 }
 
-export default function Dashboard({ activeRepositoryId, activeTBoxId, workspace, onWorkspaceChange }: DashboardProps) {
+export default function Dashboard({ activeRepositoryId, activeTBoxId, activeTBox, onTBoxChange }: DashboardProps) {
   const [graphData, setGraphData] = useState<GraphDto | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string>();
   const [isInspectorOpen, setIsInspectorOpen] = useState(true);
@@ -65,7 +65,7 @@ export default function Dashboard({ activeRepositoryId, activeTBoxId, workspace,
     undo,
     save,
     cancel
-  } = useDraftState(workspace);
+  } = useDraftState(activeTBox);
 
   const handleNodeSelect = (nodeId: string) => {
     setSelectedNodeId(nodeId);
@@ -164,7 +164,7 @@ export default function Dashboard({ activeRepositoryId, activeTBoxId, workspace,
   };
 
   const handleSave = () => {
-    const result = save(onWorkspaceChange);
+    const result = save(onTBoxChange);
     if (result.success) {
       console.log('Changes saved successfully');
     } else {
@@ -191,27 +191,27 @@ export default function Dashboard({ activeRepositoryId, activeTBoxId, workspace,
     
     // Create updated workspace with new data
     const updatedWorkspace: TBox = {
-      ...workspace,
+      ...activeTBox,
       updatedAt: new Date(),
       classes: [
-        ...workspace.classes,
+        ...activeTBox.classes,
         ...(approvedSections.classes ? preview.classes : [])
       ],
       properties: [
-        ...workspace.properties,
+        ...activeTBox.properties,
         ...(approvedSections.properties ? preview.properties : [])
       ],
       instances: [
-        ...workspace.instances,
+        ...activeTBox.instances,
         ...(approvedSections.instances ? preview.instances : [])
       ],
       relations: [
-        ...workspace.relations,
+        ...activeTBox.relations,
         ...preview.relations
       ]
     };
     
-    onWorkspaceChange(updatedWorkspace);
+    onTBoxChange(updatedWorkspace);
     setHighlightedNodes(newNodeIds);
     setShowUploadModal(false);
     
@@ -246,13 +246,13 @@ export default function Dashboard({ activeRepositoryId, activeTBoxId, workspace,
 
     // Update workspace
     const updatedWorkspace: TBox = {
-      ...workspace,
+      ...activeTBox,
       updatedAt: new Date(),
-      classes: [...workspace.classes, newClass],
-      properties: [...workspace.properties, ...newProperties]
+      classes: [...activeTBox.classes, newClass],
+      properties: [...activeTBox.properties, ...newProperties]
     };
 
-    onWorkspaceChange(updatedWorkspace);
+    onTBoxChange(updatedWorkspace);
     setHighlightedNodes([newClassId]);
     
     // Clear highlight after 3 seconds
@@ -276,12 +276,12 @@ export default function Dashboard({ activeRepositoryId, activeTBoxId, workspace,
 
     // Update workspace
     const updatedWorkspace: TBox = {
-      ...workspace,
+      ...activeTBox,
       updatedAt: new Date(),
-      instances: [...workspace.instances, newInstance]
+      instances: [...activeTBox.instances, newInstance]
     };
 
-    onWorkspaceChange(updatedWorkspace);
+    onTBoxChange(updatedWorkspace);
     setHighlightedNodes([newInstanceId]);
     
     // Clear highlight after 3 seconds
@@ -306,18 +306,18 @@ export default function Dashboard({ activeRepositoryId, activeTBoxId, workspace,
     setShowFullscreenGraph(false);
   };
 
-  const handleUpdateWorkspace = (updates: { name?: string; description?: string }) => {
-    const updatedWorkspace: TBox = {
-      ...workspace,
+  const handleUpdateTBox = (updates: { name?: string; description?: string }) => {
+    const result: TBox = {
+      ...activeTBox,
       ...updates,
       updatedAt: new Date()
     };
-    onWorkspaceChange(updatedWorkspace);
+    onTBoxChange(result);
   };
 
   // Use draft workspace for display
   const displayWorkspace: TBox = {
-    ...workspace,
+    ...activeTBox,
     classes: draft.classes,
     instances: draft.instances,
     properties: draft.properties,
@@ -328,15 +328,15 @@ export default function Dashboard({ activeRepositoryId, activeTBoxId, workspace,
     <div className="h-screen bg-gray-50 flex flex-col">
       {/* Top Bar */}
       <TopBar
-        workspace={workspace}
+        workspace={activeTBox}
         isEditMode={isEditMode}
         onToggleEditMode={handleToggleEditMode}
         onToggleAI={handleToggleAIPanel}
-        onUpdateWorkspace={handleUpdateWorkspace}
+        onUpdateTBox={handleUpdateTBox}
       />
 
       {/* Stats Panel */}
-      <StatsPanel workspace={workspace} />
+      <StatsPanel graphData={graphData} />
 
       {/* Main Content */}
       <div className="flex-1 flex min-h-px">
@@ -347,7 +347,7 @@ export default function Dashboard({ activeRepositoryId, activeTBoxId, workspace,
         
         {/* Object Inspector */}
         <ObjectInspector
-          workspace={workspace}
+          workspace={activeTBox}
           selectedNodeId={selectedNodeId}
           isOpen={isInspectorOpen}
           onToggle={handleToggleInspector}
@@ -376,7 +376,7 @@ export default function Dashboard({ activeRepositoryId, activeTBoxId, workspace,
           <AIPanel
             isOpen={isAIPanelOpen}
             onToggle={handleToggleAIPanel}
-            workspaceName={workspace.title}
+            workspaceName={activeTBox.label}
           />
         </div>
       )}

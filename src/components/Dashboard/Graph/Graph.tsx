@@ -67,8 +67,8 @@ export default function Graph({graphData}: GraphProps) {
       )
       .force("charge",
           d3.forceManyBody()
-              .strength(-400)
-              .distanceMax(800)
+              .strength(-1200)
+              .distanceMax(2200)
       )
       .force("x", d3.forceX(0).strength(0.06))
       .force("y", d3.forceY(0).strength(0.06))
