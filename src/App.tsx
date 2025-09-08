@@ -146,10 +146,11 @@ function App() {
       )}
 
       <CreateWorkspaceModal
-        isOpen={showCreateModal}
-        onClose={() => setShowCreateModal(false)}
-        onCreateManual={handleCreateManual}
-        onCreateFromFile={handleCreateFromFile}
+          activeRepositoryId={activeRepositoryId}
+          isOpen={showCreateModal}
+          onClose={() => setShowCreateModal(false)}
+          onCreateManual={handleCreateManual}
+          onCreateFromFile={handleCreateFromFile}
       />
     </div>
   );
