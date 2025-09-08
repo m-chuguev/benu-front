@@ -76,8 +76,6 @@ export class OntologyImportApiService {
     public static importTboxFile(
         repository: string,
         tboxKey: string,
-        baseUri?: string,
-        replace: boolean = false,
         formData?: {
             /**
              * Файл RDF (TTL/RDF/XML/JSON-LD/NT/TRIG/N-Quads)
@@ -91,10 +89,6 @@ export class OntologyImportApiService {
             path: {
                 'repository': repository,
                 'tboxKey': tboxKey,
-            },
-            query: {
-                'baseUri': baseUri,
-                'replace': replace,
             },
             formData: formData,
             mediaType: 'multipart/form-data',

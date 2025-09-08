@@ -1,23 +1,16 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { X, Upload, Edit3, Loader2 } from 'lucide-react';
-import { UploadPreview, ApprovedSections } from '../../types/ontology';
 import {OntologyImportApiService} from "../../api";
 
 interface CreateWorkspaceModalProps {
   activeRepositoryId: string | null;
   isOpen: boolean;
   onClose: () => void;
-  onCreateManual: (name: string, description: string) => void;
-  onCreateFromFile: (preview: UploadPreview, name: string, description: string) => void;
 }
-
-
 
 export default function CreateWorkspaceModal({ 
     isOpen,
     onClose,
-    onCreateManual,
-    onCreateFromFile,
     activeRepositoryId,
 }: CreateWorkspaceModalProps) {
   const [step, setStep] = useState<'choose' | 'manual' | 'import'>('choose');
@@ -43,17 +36,17 @@ export default function CreateWorkspaceModal({
 
   const handleCreateManual = () => {
     if (name.trim()) {
-      onCreateManual(name.trim(), description.trim());
       handleClose();
     }
   };
 
   const onUploadFile = async () => {
-    console.log(activeRepositoryId, file)
     if (activeRepositoryId && name && file) {
       setIsProcessing(true);
-      OntologyImportApiService.importTboxFile(activeRepositoryId, name,`https://ontology.example.com/${name}/`, false, {file}).then(response => {
+      OntologyImportApiService.importTboxFile(activeRepositoryId, name.trim(), {file}).then(response => {
+        console.log(response)
         setIsProcessing(false);
+        handleClose();
       }).catch(() => {
         setIsProcessing(false);
       })
@@ -103,8 +96,9 @@ export default function CreateWorkspaceModal({
                 </button>
 
                 <button
+                    disabled={true}
                   onClick={() => setStep('manual')}
-                  className="w-full p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50/50 transition-all text-left group"
+                  className="w-full p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50/50 transition-all text-left group opacity-20"
                 >
                   <div className="flex items-start space-x-3">
                     <div className="p-2 bg-gray-100 rounded-lg group-hover:bg-gray-200 transition-colors">

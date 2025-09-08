@@ -2,7 +2,7 @@ import { BarChart3, Network, Database, GitBranch, Calendar } from 'lucide-react'
 import {GraphDto} from "../../api";
 
 interface StatsPanelProps {
-  graphData: GraphDto | null;
+  graphData?: GraphDto | null;
 }
 
 export default function StatsPanel({ graphData }: StatsPanelProps) {
