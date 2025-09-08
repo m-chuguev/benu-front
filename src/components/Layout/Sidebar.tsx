@@ -8,10 +8,10 @@ interface SidebarProps {
   activeTBoxId: string | null;
   setActiveRepositoryId: (id: string) => void;
   onTBoxSelect: (workspaceId: string) => void;
-  onCreateWorkspace: () => void;
+  onCreateTBox: () => void;
 }
 
-export default function Sidebar({ workspaces, activeTBoxId, setActiveRepositoryId, onTBoxSelect, onCreateWorkspace }: SidebarProps) {
+export default function Sidebar({ workspaces, activeTBoxId, setActiveRepositoryId, onTBoxSelect, onCreateTBox }: SidebarProps) {
   const [repositories, setRepositories] = useState<RepositorySummaryDto[]>([]);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export default function Sidebar({ workspaces, activeTBoxId, setActiveRepositoryI
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-medium text-gray-700">T-Boxes</h2>
           <button
-            onClick={onCreateWorkspace}
+            onClick={onCreateTBox}
             className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-colors"
           >
             <Plus size={16} />
@@ -94,7 +94,7 @@ export default function Sidebar({ workspaces, activeTBoxId, setActiveRepositoryI
             <FolderOpen size={24} className="mx-auto mb-2 text-gray-400" />
             <p className="text-sm mb-2">No workspaces</p>
             <button
-              onClick={onCreateWorkspace}
+              onClick={onCreateTBox}
               className="text-sm text-blue-600 hover:text-blue-700 font-medium"
             >
               Create first workspace
@@ -106,11 +106,11 @@ export default function Sidebar({ workspaces, activeTBoxId, setActiveRepositoryI
       {/* New Workspace Button */}
       <div className="p-4 border-t border-gray-100">
         <button 
-          onClick={onCreateWorkspace}
+          onClick={onCreateTBox}
           className="w-full flex items-center justify-center space-x-2 p-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
         >
           <Plus size={16} />
-          <span>New Workspace</span>
+          <span>New TBox</span>
         </button>
       </div>
     </div>

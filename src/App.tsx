@@ -47,7 +47,7 @@ function App() {
     markAsExperienced();
   };
 
-  const handleCreateWorkspace = () => {
+  const handleCreateTBox = () => {
     setShowCreateModal(true);
   };
 
@@ -77,6 +77,7 @@ function App() {
   };
 
   const handleCreateFromFile = (preview: UploadPreview, name: string, description: string) => {
+    console.log(preview,name, description)
     // Authenticate user if they're not already
     if (!userState.isAuthenticated) {
       authenticateUser();
@@ -128,7 +129,7 @@ function App() {
         workspaces={tBoxes}
         activeTBoxId={activeTBoxId}
         onTBoxSelect={(tBoxId: string) => setActiveTBoxId(tBoxId)}
-        onCreateWorkspace={handleCreateWorkspace}
+        onCreateTBox={handleCreateTBox}
       />
       
       {activeTBox ? (
@@ -141,7 +142,7 @@ function App() {
           />
         </div>
       ) : (
-        <EmptyState onCreateWorkspace={handleCreateWorkspace} />
+        <EmptyState onCreateWorkspace={handleCreateTBox} />
       )}
 
       <CreateWorkspaceModal
